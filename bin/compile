@@ -172,7 +172,8 @@ fi
 APACHE_VERSION="2.4.9"
 APACHE_DIST_URL="$S3_URL/apache-$APACHE_VERSION.tar.gz"
 echo "- Apache $APACHE_VERSION" | indent
-curl --silent --location "$APACHE_DIST_URL" | tar xz -C $BUILD_DIR/.heroku/php
+echo "apache downloading"
+curl --silent --location https://lang-php.s3.amazonaws.com/dist-cedar-14-master/apache-2.4.17.tar.gz | tar xz -C $BUILD_DIR/.heroku/php
 # Apache; copy in our config
 cp $BP_DIR/conf/apache2/httpd.conf.default $BUILD_DIR/.heroku/php/etc/apache2/httpd.conf
 # remember the version for future upgrade handling
