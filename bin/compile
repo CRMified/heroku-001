@@ -174,7 +174,7 @@ echo $NGINX_VERSION > $CACHE_DIR/nginx_version
 source $BP_DIR/bin/ioncube.sh
 if [[ $engine == "php" ]]; then
     status "Installing PHP extensions:"
-    install_ext "opcache" "automatic"
+   # install_ext "opcache" "automatic"
     exts=
     if [[ -f "composer.json" ]]; then
         exts=$(cat composer.json | python -c 'from __future__ import print_function; import sys, json; { print(key[4:]) for key in json.load(sys.stdin)["require"] if key.startswith("ext-")}' 2> /dev/null || true)
@@ -185,14 +185,14 @@ if [[ $engine == "php" ]]; then
             if [[ "$ext" == "newrelic" ]]; then
                 newrelic_installed=true
             fi
-            install_ext "$ext" "composer.json"
+           # install_ext "$ext" "composer.json"
         done <<< "$exts"
     fi
     # special treatment for New Relic; we enable it if we detect a license key for it
     # otherwise users would have to have it in their require section, which is annoying in development environments
     NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY:-}
     if [[ $newrelic_installed == false && -n "$NEW_RELIC_LICENSE_KEY" ]]; then
-        install_ext "newrelic" "add-on detected"
+       # install_ext "newrelic" "add-on detected"
     fi
 fi
 
