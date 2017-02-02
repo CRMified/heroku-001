@@ -192,6 +192,7 @@ if [[ $engine == "php" ]]; then
     # otherwise users would have to have it in their require section, which is annoying in development environments
     NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY:-}
     if [[ $newrelic_installed == false && -n "$NEW_RELIC_LICENSE_KEY" ]]; then
+	echo "asd"
        # install_ext "newrelic" "add-on detected"
     fi
 fi
