@@ -18,7 +18,7 @@ echo "-----> Packaging ext/ioncube ${DEFAULT_VERSION}..."
 curl -L ${dep_url} | tar xz
 
 pushd ${dep_dirname}
-ext_dir=${OUT_PREFIX}/lib/php/extensions/no-debug-non-zts-20121212
+ext_dir=/app/.heroku/php/lib/php/extensions/no-debug-non-zts-20131226
 bin_dir=${OUT_PREFIX}/bin
 mkdir -p ${ext_dir}
 mkdir -p ${bin_dir}
