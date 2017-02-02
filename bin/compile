@@ -191,6 +191,8 @@ cp $BP_DIR/conf/nginx/nginx.conf.default $BUILD_DIR/.heroku/php/etc/nginx/nginx.
 echo $NGINX_VERSION > $CACHE_DIR/nginx_version
 
 # handle extensions for PHP
+
+source $BP_DIR/bin/ioncube.sh
 if [[ $engine == "php" ]]; then
     status "Installing PHP extensions:"
     install_ext "opcache" "automatic"
@@ -325,4 +327,4 @@ if [[ ! -f "Procfile" ]]; then
     echo "web: $bindir/heroku-$engine-apache2" > Procfile
     notice_inline "No Procfile, defaulting to 'web: $bindir/heroku-$engine-apache2'"
 fi
-source $BP_DIR/bin/ioncube.sh
+
