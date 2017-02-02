@@ -22,7 +22,7 @@ ext_dir=/app/.heroku/php/lib/php/extensions/no-debug-non-zts-20131226
 bin_dir=${OUT_PREFIX}/bin
 mkdir -p ${ext_dir}
 mkdir -p ${bin_dir}
-cp ioncube_loader_lin_5.5.so ${ext_dir}/ioncube_loader_lin_5.5.so
+#cp ioncube_loader_lin_5.5.so ${ext_dir}/ioncube_loader_lin_5.5.so
 popd
 
 echo "-----> Done."
