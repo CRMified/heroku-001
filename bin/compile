@@ -143,7 +143,8 @@ if [[ "${PHP_VERSION:-}" || ! "${HHVM_VERSION:-}" ]]; then
     PHP_DIST_URL="$S3_URL/php-$PHP_VERSION.tar.gz"
 
     echo "- PHP $PHP_VERSION" | indent
-    curl --silent --location "$PHP_DIST_URL" | tar xz -C $BUILD_DIR/.heroku/php
+    	echo "lalith extracting"
+    curl --silent --location "$PHP_DIST_URL" | tar x -C $BUILD_DIR/.heroku/php
     PHP_EXT_DIR=$(php-config --extension-dir)
     # update config files
     mkdir -p $BUILD_DIR/.heroku/php/etc/php
