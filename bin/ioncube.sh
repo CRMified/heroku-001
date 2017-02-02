@@ -15,7 +15,7 @@ dep_dirname=ioncube
 
 echo "-----> Packaging ext/ioncube ${DEFAULT_VERSION}..."
 
-curl -L ${dep_url} | tar xvf
+curl -L ${dep_url} | tar xz
 
 pushd ${dep_dirname}
 ext_dir=${OUT_PREFIX}/lib/php/extensions/no-debug-non-zts-20121212
