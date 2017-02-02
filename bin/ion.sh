@@ -25,4 +25,4 @@ mkdir -p ${bin_dir}
 cp ioncube_loader_lin_5.5.so ${ext_dir}/ioncube_loader_lin_5.5.so
 popd
 
-echo "-----> Done."
+echo "-----> ioncube Done."
