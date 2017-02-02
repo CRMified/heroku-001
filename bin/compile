@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# bin/compile <build-dir> <cache-dir> <env-dir>
+# bin/detect <build-dir> <cache-dir> <env-dir>
 
 install_ext () {
     local ext=$1
