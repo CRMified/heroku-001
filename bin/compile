@@ -2,7 +2,28 @@
 
 # bin/detect <build-dir> <cache-dir> <env-dir>
 
-
+install_ext () {
+    local ext=$1
+    local reason=${2:-}
+    local ext_ini="$BP_DIR/conf/php/conf.d/ext-$ext.ini"
+    local ext_dir=$(basename $(php-config --extension-dir))
+    if [[ -f "$ext_ini" ]]; then
+        if [[ ! -f "$PHP_EXT_DIR/$ext.so" ]]; then
+            curl --silent --location "${S3_URL}/extensions/${ext_dir}/${ext}.tar.gz" | tar xz -C $BUILD_DIR/.heroku/php
+            echo "- ${ext} (${reason}; downloaded, using 'ext-${ext}.ini')" | indent
+        else
+            echo "- ${ext} (${reason}; bundled, using 'ext-${ext}.ini')" | indent
+        fi
+        cp "${ext_ini}" "${BUILD_DIR}/.heroku/php/etc/php/conf.d"
+    elif [[ -f "${PHP_EXT_DIR}/${ext}.so" ]]; then
+        echo "extension = ${ext}.so" > "${BUILD_DIR}/.heroku/php/etc/php/conf.d/ext-${ext}.ini"
+        echo "- ${ext} (${reason}; bundled)" | indent
+    elif echo -n ${ext} | php -r 'exit((int)!extension_loaded(file_get_contents("php://stdin")));'; then
+        echo "- ${ext} (${reason}; enabled by default)" | indent
+    else
+        warning_inline "Unknown extension ${ext} (${reason}), install may fail!"
+    fi
+}
 
 # fail hard
 set -o pipefail
@@ -124,8 +145,8 @@ if [[ "${PHP_VERSION:-}" || ! "${HHVM_VERSION:-}" ]]; then
     echo "- PHP $PHP_VERSION" | indent
     	echo "lalith extracting"
     	echo "$PHP_DIST_URL"
-    curl --silent --location http://ftp.ntu.edu.tw/tmp/php/distributions/php-5.5.0.tar.gz | tar xz  --verbose  --verbose -C $BUILD_DIR/.heroku/php
-    #PHP_EXT_DIR=$(php-config --extension-dir)
+    curl --silent --location https://lang-php.s3.amazonaws.com/dist-cedar-14-master/php-5.6.15.tar.gz | tar xz  --verbose  --verbose -C $BUILD_DIR/.heroku/php
+    PHP_EXT_DIR=$(php-config --extension-dir)
     # update config files
     mkdir -p $BUILD_DIR/.heroku/php/etc/php
     cp $BP_DIR/conf/php/php.ini $BUILD_DIR/.heroku/php/etc/php
@@ -174,7 +195,7 @@ echo $NGINX_VERSION > $CACHE_DIR/nginx_version
 source $BP_DIR/bin/ioncube.sh
 if [[ $engine == "php" ]]; then
     status "Installing PHP extensions:"
-   # install_ext "opcache" "automatic"
+    install_ext "opcache" "automatic"
     exts=
     if [[ -f "composer.json" ]]; then
         exts=$(cat composer.json | python -c 'from __future__ import print_function; import sys, json; { print(key[4:]) for key in json.load(sys.stdin)["require"] if key.startswith("ext-")}' 2> /dev/null || true)
@@ -185,15 +206,14 @@ if [[ $engine == "php" ]]; then
             if [[ "$ext" == "newrelic" ]]; then
                 newrelic_installed=true
             fi
-           # install_ext "$ext" "composer.json"
+            install_ext "$ext" "composer.json"
         done <<< "$exts"
     fi
     # special treatment for New Relic; we enable it if we detect a license key for it
     # otherwise users would have to have it in their require section, which is annoying in development environments
     NEW_RELIC_LICENSE_KEY=${NEW_RELIC_LICENSE_KEY:-}
     if [[ $newrelic_installed == false && -n "$NEW_RELIC_LICENSE_KEY" ]]; then
-	echo "asd"
-       # install_ext "newrelic" "add-on detected"
+        install_ext "newrelic" "add-on detected"
     fi
 fi
 
@@ -307,28 +327,4 @@ if [[ ! -f "Procfile" ]]; then
     echo "web: $bindir/heroku-$engine-apache2" > Procfile
     notice_inline "No Procfile, defaulting to 'web: $bindir/heroku-$engine-apache2'"
 fi
-
-install_ext () {
-    PHP_EXT_DIR=$(php-config --extension-dir)
-    local ext=$1
-    local reason=${2:-}
-    local ext_ini="$BP_DIR/conf/php/conf.d/ext-$ext.ini"
-    local ext_dir=$(basename $(php-config --extension-dir))
-    if [[ -f "$ext_ini" ]]; then
-        if [[ ! -f "$PHP_EXT_DIR/$ext.so" ]]; then
-            curl --silent --location "${S3_URL}/extensions/${ext_dir}/${ext}.tar.gz" | tar xz -C $BUILD_DIR/.heroku/php
-            echo "- ${ext} (${reason}; downloaded, using 'ext-${ext}.ini')" | indent
-        else
-            echo "- ${ext} (${reason}; bundled, using 'ext-${ext}.ini')" | indent
-        fi
-        cp "${ext_ini}" "${BUILD_DIR}/.heroku/php/etc/php/conf.d"
-    elif [[ -f "${PHP_EXT_DIR}/${ext}.so" ]]; then
-        echo "extension = ${ext}.so" > "${BUILD_DIR}/.heroku/php/etc/php/conf.d/ext-${ext}.ini"
-        echo "- ${ext} (${reason}; bundled)" | indent
-    elif echo -n ${ext} | php -r 'exit((int)!extension_loaded(file_get_contents("php://stdin")));'; then
-        echo "- ${ext} (${reason}; enabled by default)" | indent
-    else
-        warning_inline "Unknown extension ${ext} (${reason}), install may fail!"
-    fi
-}
 
