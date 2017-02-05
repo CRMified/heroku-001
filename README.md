@@ -4,16 +4,6 @@ This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) fo
 
 It uses Composer for dependency management, supports PHP or HHVM (experimental) as runtimes, and offers a choice of Apache2 or Nginx web servers.
 
-## Usage
-
-You'll need to use at least an empty `composer.json` in your application.
-
-    heroku config:set BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-php
-    echo '{}' > composer.json
-    git add .
-    git commit -am "add composer.json for PHP app detection"
-
-
 Please refer to [Dev Center](https://devcenter.heroku.com/categories/php) for further usage instructions.
 
 ## Development
