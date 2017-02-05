@@ -1,12 +1,3 @@
-# Heroku buildpack: PHP
-
-This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpacks) for PHP applications.
-
-It uses Composer for dependency management, supports PHP or HHVM (experimental) as runtimes, and offers a choice of Apache2 or Nginx web servers.
-
-Please refer to [Dev Center](https://devcenter.heroku.com/categories/php) for further usage instructions.
-
-## Development
 
 ### Compiling Binaries
 
